@@ -31,3 +31,5 @@ Makefile
 *.o
 *.a
 *.so
+UpgradeLog.htm
+UpgradeLog2.htm
