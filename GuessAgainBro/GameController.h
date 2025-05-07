@@ -15,6 +15,7 @@
 #include <random>
 #include <sstream>
 
+#define ATTEMPTS 6
 
 class GameController : public Controller {
 	using json = nlohmann::json;
@@ -90,16 +91,19 @@ public:
 				}
 		
 				game.setattempts(game.getattempts() + 1);
-				if (game.getattempts() == 6) {
-					game.setIs_active(false);
-					game.setIs_victory(false);
-					result["message"] = "Attempts finished. You lost!";
-				}
+
 				if (guess == game.getTarget_word()) {
 					game.setIs_active(false);
 					game.setIs_victory(true);
 					result["message"] = "Correct! You won!";
 				}
+
+				if (!(game.getIs_victory()) && game.getattempts() == ATTEMPTS) {
+					game.setIs_active(false);
+					game.setIs_victory(false);
+					result["message"] = "Attempts finished. You lost!";
+				}
+
 		
 				return std::make_pair(200, result.dump());
 		
@@ -114,11 +118,14 @@ public:
 		
 
 		Get("/start", [this]() {
+			srand((unsigned)(time(nullptr)));
+
 			if (valid_words.empty()) {
 				return std::make_pair(500, json({ {"error", "Word list is empty"} }).dump());
 			}
 		
 			std::string session_id = GenerateSessionId();
+
 			std::string target = valid_words[rand() % valid_words.size()];
 		
 			sessions[session_id] = Game{target};
@@ -130,6 +137,31 @@ public:
 				{"session_id", session_id}
 			}).dump());
 		});
+
+		Get("/stats", [this](const httplib::Request& req) {
+			// Get session_id from query parameter (e.g. GET /game/stats?session_id=abc123)
+			auto it = req.params.find("session_id");
+			if (it == req.params.end()) {
+				return std::make_pair(400, json({ {"error", "Missing session_id"} }).dump());
+			}
+		
+			const std::string& session_id = it->second;
+		
+			if (sessions.find(session_id) == sessions.end()) {
+				return std::make_pair(404, json({ {"error", "Session not found"} }).dump());
+			}
+		
+			const Game& game = sessions[session_id];
+		
+			json stats = {
+				{"attempts", game.getattempts()},
+				{"is_active", game.getIs_active()},
+				{"is_victory", game.getIs_victory()}
+			};
+		
+			return std::make_pair(200, stats.dump());
+		});
+		
 		
 	}
 };

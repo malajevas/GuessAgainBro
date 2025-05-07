@@ -23,6 +23,16 @@ protected:
             res.set_content(body, "text/html");
         });
     }
+
+	void Get(const std::string path, std::function<std::pair<int, std::string>(const httplib::Request&)> handler) {
+		server.Get(route + path, [handler](const httplib::Request& req, httplib::Response& res) {
+			auto [status, body] = handler(req);
+			res.status = status;
+			res.set_header("Content-Type", "application/json");
+			res.set_content(body, "application/json");
+		});
+	}
+	
 	void Post(const std::string path, std::function<std::pair<int, std::string>(const httplib::Request&)> handler) {
 		server.Post(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
 			logger.Info("Received POST" + req.path);
