@@ -1,5 +1,4 @@
 #include <iostream>
-#include "IndexController.h"
 #include "GameController.h"
 #include <httplib.h>
 int main()
@@ -18,7 +17,6 @@ int main()
     svr.Options("/game/word", [](const httplib::Request& req, httplib::Response& res) {
         res.status = 204;
     });
-    IndexController indexController(svr);
     GameController gameController(svr);
 
     std::cout << "Server listening on port 1337..." << std::endl;

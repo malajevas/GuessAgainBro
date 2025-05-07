@@ -2,6 +2,7 @@
 #include "Controller.h"
 #include "httplib.h"
 #include "json.hpp"
+#include "Logger.h"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -15,6 +16,7 @@ class GameController : public Controller {
 private:
     std::vector<std::string> valid_words;
     std::string todays_word;
+	Logger logger;
 
 	void LoadWordsFromFile(const std::string& filename) {
 		std::ifstream file(filename);
@@ -35,7 +37,7 @@ public:
 		SetRoute("/game");
 
 		LoadWordsFromFile("words.txt");
-		std::cout << "TESTING: today's word is " << todays_word << std::endl;
+		logger.Debug("Today's word is: " + todays_word);
 
 		Post("/word", [this](const httplib::Request& req) {
 			try{
