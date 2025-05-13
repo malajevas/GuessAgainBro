@@ -2,20 +2,21 @@
 #include <httplib.h>
 #include <string>
 #include <functional>
-#include "HttpStatus.h"
 #include "Logger.h"
 
 class Controller {
     httplib::Server& server;
     std::string route = "";
-	Logger logger;
+	
 protected:
+	Logger logger;
+
     Controller(httplib::Server& srv) : server(srv) {
     }
 
     void Get(const std::string path, std::function<std::pair<int, std::string>()> handler) {
         server.Get(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
-			logger.Info("Received GET" + req.path);
+			logger.Info("Received GET (new game)" + req.path);
 
             auto [status, body] = handler();
             res.status = status;
@@ -25,7 +26,9 @@ protected:
     }
 
 	void Get(const std::string path, std::function<std::pair<int, std::string>(const httplib::Request&)> handler) {
-		server.Get(route + path, [handler](const httplib::Request& req, httplib::Response& res) {
+		server.Get(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
+			logger.Info("Received GET (stats)" + req.path);
+
 			auto [status, body] = handler(req);
 			res.status = status;
 			res.set_header("Content-Type", "application/json");
