@@ -102,7 +102,7 @@ public:
 					}
 				}
 		
-				game.setattempts(game.getattempts() + 1);
+				game.setAttempts(game.getAttempts() + 1);
 
 				if (guess == game.getTarget_word()) {
 					game.setIs_active(false);
@@ -110,7 +110,7 @@ public:
 					result["message"] = "Correct! You won!";
 				}
 
-				if (!(game.getIs_victory()) && game.getattempts() == ATTEMPTS) {
+				if (!(game.getIs_victory()) && game.getAttempts() == ATTEMPTS) {
 					game.setIs_active(false);
 					game.setIs_victory(false);
 					result["message"] = "Attempts finished. You lost!";
@@ -166,7 +166,7 @@ public:
 			const Game& game = sessions[session_id];
 		
 			json stats = {
-				{"attempts", game.getattempts()},
+				{"attempts", game.getAttempts()},
 				{"is_active", game.getIs_active()},
 				{"is_victory", game.getIs_victory()}
 			};
