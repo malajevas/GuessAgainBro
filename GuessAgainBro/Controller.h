@@ -9,14 +9,12 @@ class Controller {
     std::string route = "";
 	
 protected:
-	Logger logger;
-
     Controller(httplib::Server& srv) : server(srv) {
     }
 
     void Get(const std::string path, std::function<std::pair<int, std::string>()> handler) {
         server.Get(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
-			logger.Info("Received GET (new game)" + req.path);
+			Logger::GetInstance().Info("Received GET" + req.path);
 
             auto [status, body] = handler();
             res.status = status;
@@ -27,7 +25,7 @@ protected:
 
 	void Get(const std::string path, std::function<std::pair<int, std::string>(const httplib::Request&)> handler) {
 		server.Get(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
-			logger.Info("Received GET (stats)" + req.path);
+			Logger::GetInstance().Info("Received GET" + req.path);
 
 			auto [status, body] = handler(req);
 			res.status = status;
@@ -38,7 +36,7 @@ protected:
 	
 	void Post(const std::string path, std::function<std::pair<int, std::string>(const httplib::Request&)> handler) {
 		server.Post(route + path, [this, handler](const httplib::Request& req, httplib::Response& res) {
-			logger.Info("Received POST" + req.path);
+			Logger::GetInstance().Info("Received POST" + req.path);
 
 			auto [status, body] = handler(req);
 			res.status = status;

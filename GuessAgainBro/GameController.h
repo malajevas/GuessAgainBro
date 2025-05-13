@@ -87,7 +87,7 @@ public:
 					return std::make_pair(NotFound, json({ {"error", "Word not in dictionary"} }).dump());
 				}
 				
-				logger.Info("Guessed word: " + guess);
+				Logger::GetInstance().Info("Guessed word: " + guess);
 
 				json result;
 				for (size_t i = 0; i < guess.length(); ++i) {
@@ -142,7 +142,7 @@ public:
 		
 			sessions[session_id] = Game{target};
 		
-			logger.Info("Started new session: " + session_id + " | Word: " + target);
+			Logger::GetInstance().Info("Started new session: " + session_id + " | Word: " + target);
 		
 			return std::make_pair(OK, json({
 				{"message", "New game started"},
