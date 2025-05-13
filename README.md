@@ -75,6 +75,5 @@ Jeigu žodis yra netinkamas, arba tai nėra "šiandienos žodis", vartotojas gau
 Jeigu vartotojas nesugebėjo atspėti žodžio po šešių bandymų, žaidimas yra pralaimėtas.
 
 ## Paleidimas
-Norint paleisti projektą, pirmiausia atidarykite komandų eilutę ir pagrindiniame kataloge paleiskite komandą `make`, kad būtų sukompiliuotas serveris. Tada paleiskite sukompiliuotą failą (`app.exe`).
+Norint paleisti projektą, pagrindiniame kataloge atidarykite `GuessAgainBro.sln` failą ir paleiskite projektą, kad būtų sukompiliuotas serveris.
 Tuomet eikite į katalogą `front/word-guesser-app` ir paleiskite frontendą su komanda `npm start`.
-GuessAgainBro.md
