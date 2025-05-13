@@ -5,8 +5,6 @@
 
 int main()
 {
-    Logger logger;
-
     httplib::Server svr;
     svr.new_task_queue = [] { return new httplib::ThreadPool(4); };
 
@@ -23,6 +21,7 @@ int main()
     });
     GameController gameController(svr);
 
-    logger.Info("Server listening on port 1337...");
+    //Logger::Init("log.txt"); // to log into a .txt file
+    Logger::GetInstance().Info("Server listening on port 1337...");
     svr.listen("localhost", 1337);
 }

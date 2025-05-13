@@ -17,12 +17,22 @@
 
 #define ATTEMPTS 6
 
+enum HttpStatus {
+    OK = 200,
+    Created = 201,
+	NoContent = 204,
+    BadRequest = 400,
+	Forbidden = 403,
+    NotFound = 404,
+    ServerError = 500,
+	NotImplemented = 501
+};
+
 class GameController : public Controller {
 	using json = nlohmann::json;
 private:
     std::vector<std::string> valid_words;
 	std::unordered_map<std::string, Game> sessions;
-	Logger logger;
 
 	void LoadWordsFromFile(const std::string& filename) {
 		std::ifstream file(filename);
@@ -61,22 +71,24 @@ public:
 				std::string guess = json_body["word"];
 		
 				if (sessions.find(session_id) == sessions.end()) {
-					return std::make_pair(404, json({ {"error", "Session not found"} }).dump());
+					return std::make_pair(NotFound, json({ {"error", "Session not found"} }).dump());
 				}
 		
 				Game& game = sessions[session_id];
 		
 				if (!game.getIs_active()) {
 					if(game.getIs_victory())
-						return std::make_pair(403, json({ {"error", "Victory! Game over"} }).dump());
+						return std::make_pair(Forbidden, json({ {"error", "Victory! Game over"} }).dump());
 					else
-						return std::make_pair(403, json({ {"error", "Defeat! Game over"} }).dump());
+						return std::make_pair(Forbidden, json({ {"error", "Defeat! Game over"} }).dump());
 				}
 		
 				if (std::find(valid_words.begin(), valid_words.end(), guess) == valid_words.end()) {
-					return std::make_pair(404, json({ {"error", "Word not in dictionary"} }).dump());
+					return std::make_pair(NotFound, json({ {"error", "Word not in dictionary"} }).dump());
 				}
-		
+				
+				Logger::GetInstance().Info("Guessed word: " + guess);
+
 				json result;
 				for (size_t i = 0; i < guess.length(); ++i) {
 					if (guess[i] == game.getTarget_word()[i]) {
@@ -90,7 +102,7 @@ public:
 					}
 				}
 		
-				game.setattempts(game.getattempts() + 1);
+				game.setAttempts(game.getAttempts() + 1);
 
 				if (guess == game.getTarget_word()) {
 					game.setIs_active(false);
@@ -98,21 +110,21 @@ public:
 					result["message"] = "Correct! You won!";
 				}
 
-				if (!(game.getIs_victory()) && game.getattempts() == ATTEMPTS) {
+				if (!(game.getIs_victory()) && game.getAttempts() == ATTEMPTS) {
 					game.setIs_active(false);
 					game.setIs_victory(false);
 					result["message"] = "Attempts finished. You lost!";
 				}
 
 		
-				return std::make_pair(200, result.dump());
+				return std::make_pair(OK, result.dump());
 		
 			} 
 			catch (const json::parse_error& e) {
-				return std::make_pair(400, json({ {"error", "Invalid JSON format"} }).dump());
+				return std::make_pair(BadRequest, json({ {"error", "Invalid JSON format"} }).dump());
 			}
 			catch (const std::exception& e) {
-				return std::make_pair(500, json({ {"error", "Internal server error"} }).dump());
+				return std::make_pair(ServerError, json({ {"error", "Internal server error"} }).dump());
 			}
 		});
 		
@@ -121,7 +133,7 @@ public:
 			srand((unsigned)(time(nullptr)));
 
 			if (valid_words.empty()) {
-				return std::make_pair(500, json({ {"error", "Word list is empty"} }).dump());
+				return std::make_pair(ServerError, json({ {"error", "Word list is empty"} }).dump());
 			}
 		
 			std::string session_id = GenerateSessionId();
@@ -130,9 +142,9 @@ public:
 		
 			sessions[session_id] = Game{target};
 		
-			logger.Info("Started new session: " + session_id + " | Word: " + target);
+			Logger::GetInstance().Info("Started new session: " + session_id + " | Word: " + target);
 		
-			return std::make_pair(200, json({
+			return std::make_pair(OK, json({
 				{"message", "New game started"},
 				{"session_id", session_id}
 			}).dump());
@@ -142,24 +154,24 @@ public:
 			// Get session_id from query parameter (e.g. GET /game/stats?session_id=abc123)
 			auto it = req.params.find("session_id");
 			if (it == req.params.end()) {
-				return std::make_pair(400, json({ {"error", "Missing session_id"} }).dump());
+				return std::make_pair(BadRequest, json({ {"error", "Missing session_id"} }).dump());
 			}
 		
 			const std::string& session_id = it->second;
 		
 			if (sessions.find(session_id) == sessions.end()) {
-				return std::make_pair(404, json({ {"error", "Session not found"} }).dump());
+				return std::make_pair(NotFound, json({ {"error", "Session not found"} }).dump());
 			}
 		
 			const Game& game = sessions[session_id];
 		
 			json stats = {
-				{"attempts", game.getattempts()},
+				{"attempts", game.getAttempts()},
 				{"is_active", game.getIs_active()},
 				{"is_victory", game.getIs_victory()}
 			};
 		
-			return std::make_pair(200, stats.dump());
+			return std::make_pair(OK, stats.dump());
 		});
 		
 		

@@ -132,12 +132,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GuessAgainBro.cpp" />
-    <ClCompile Include="HttpStatus.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="GameController.h" />
-    <ClInclude Include="HttpStatus.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="IndexController.h" />
   </ItemGroup>

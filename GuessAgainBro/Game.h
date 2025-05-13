@@ -24,12 +24,12 @@ struct Game {
         }
 
         void setTarget_word(const std::string& target_word) { this->target_word = target_word; }
-        void setattempts(int attempts) { this->attempts = attempts; }
+        void setAttempts(int attempts) { this->attempts = attempts; }
         void setIs_active(bool is_active) { this->is_active = is_active; }
         void setIs_victory(bool is_victory) { this->is_victory = is_victory; }
 
         std::string getTarget_word() const { return this->target_word; }
-        int getattempts() const { return this->attempts; }
+        int getAttempts() const { return this->attempts; }
         bool getIs_active() const { return this->is_active; }
         bool getIs_victory() const { return this->is_victory; }
 };
