@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "f875e668-a7b3-46ef-9fad-e68723281c84",
+		"name": "wordle",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29989928"
+	},
+	"item": [
+		{
+			"name": "GET session_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:1337/game/start",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"game",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST word",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"session_id\":\"{{session_id}}\",\r\n    \"word\": \"beard\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:1337/game/word",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"game",
+						"word"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET stats",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:1337/game/stats?session_id={{session_id}}",
+					"host": [
+						"localhost"
+					],
+					"port": "1337",
+					"path": [
+						"game",
+						"stats"
+					],
+					"query": [
+						{
+							"key": "session_id",
+							"value": "{{session_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "session_id",
+			"value": "7df56d05b317c903",
+			"type": "string"
+		}
+	]
+}
