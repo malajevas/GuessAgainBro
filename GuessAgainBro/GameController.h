@@ -83,9 +83,9 @@ public:
 						return std::make_pair(Forbidden, json({ {"error", "Defeat! Game over"} }).dump());
 				}
 		
-				if (std::find(valid_words.begin(), valid_words.end(), guess) == valid_words.end()) {
+				/*if (std::find(valid_words.begin(), valid_words.end(), guess) == valid_words.end()) {
 					return std::make_pair(NotFound, json({ {"error", "Word not in dictionary"} }).dump());
-				}
+				}*/
 				
 				Logger::GetInstance().Info("Guessed word: " + guess);
 
