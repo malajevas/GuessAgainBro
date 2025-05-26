@@ -87,7 +87,7 @@ public:
 					return std::make_pair(NotFound, json({ {"error", "Word not in dictionary"} }).dump());
 				}*/
 				
-				Logger::GetInstance().Info("Guessed word: " + guess);
+				Logger::GetInstance().Info("Session id: " + session_id + ". Guessed word: " + guess);
 
 				json result;
 				for (size_t i = 0; i < guess.length(); ++i) {
