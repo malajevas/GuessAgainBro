@@ -174,6 +174,34 @@ public:
 			return std::make_pair(OK, stats.dump());
 		});
 		
-		
+		Get("/word", [this](const httplib::Request& req) {
+			auto it = req.params.find("session_id");
+			if (it == req.params.end()) {
+				return std::make_pair(BadRequest, json({ {"error", "Missing session_id"} }).dump());
+			}
+
+			const std::string& session_id = it->second;
+
+			if (sessions.find(session_id) == sessions.end()) {
+				return std::make_pair(NotFound, json({ {"error", "Session not found"} }).dump());
+			}
+
+			const Game& game = sessions[session_id];
+
+			if (game.getIs_active()) {
+				return std::make_pair(Forbidden, json({ {"error", "Game is still active"} }).dump());
+			}
+
+			json response = {
+				{"word", game.getTarget_word()},
+				{"is_victory", game.getIs_victory()},
+				{"attempts", game.getAttempts()}
+			};
+
+			Logger::GetInstance().Info("Revealed word for session: " + session_id + " | Word: " + game.getTarget_word());
+
+			return std::make_pair(OK, response.dump());
+		});
+
 	}
 };

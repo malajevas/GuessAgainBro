@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 
 const ATTEMPTS = 6;
+const WORD_LENGTH = 5;
 
 function App() {
   const [sessionId, setSessionId] = useState('');
@@ -13,6 +15,7 @@ function App() {
   const [showStats, setShowStats] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [targetWord, setTargetWord] = useState('');
 
   // Start new game on first load
   useEffect(() => {
@@ -56,11 +59,14 @@ function App() {
   }, [isActive, startTime]);
 
   const handleInputChange = (e) => {
-    setInputText(e.target.value.toLowerCase());
+    const value = e.target.value.toLowerCase();
+    if (value.length <= WORD_LENGTH) {
+      setInputText(value);
+    }
   };
 
   const handleSubmit = async () => {
-    if (!inputText || inputText.length === 0) return;
+    if (!inputText || inputText.length !== WORD_LENGTH) return;
     if (!sessionId || !isActive) return;
 
     try {
@@ -96,6 +102,16 @@ function App() {
       if (data.message) {
         setGameOverMessage(data.message);
         setIsActive(false);
+        
+        try {
+          const wordRes = await fetch(`http://localhost:1337/game/word?session_id=${sessionId}`);
+          if (wordRes.ok) {
+            const wordData = await wordRes.json();
+            setTargetWord(wordData.word || '');
+          }
+        } catch (e) {
+          console.error('Failed to fetch target word');
+        }
       }
 
       setInputText('');
@@ -136,6 +152,7 @@ function App() {
     setIsActive(true);
     setInputText('');
     setShowStats(false);
+    setTargetWord('');
 
     try {
       const res = await fetch('http://localhost:1337/game/start');
@@ -148,107 +165,116 @@ function App() {
     }
   };
 
-  const getBackgroundColor = (status) => {
-    if (status === 1) return 'green';
-    if (status === 2) return 'goldenrod';
-    return 'gray';
+  const getCellClass = (status) => {
+    let cellClass = 'grid-cell';
+    if (status === 1) cellClass += ' correct';
+    else if (status === 2) cellClass += ' present';
+    else if (status !== null) cellClass += ' absent';
+    return cellClass;
+  };
+
+  const renderGrid = () => {
+    const grid = [];
+    
+    for (let row = 0; row < ATTEMPTS; row++) {
+      const rowCells = [];
+      
+      for (let col = 0; col < WORD_LENGTH; col++) {
+        let letter = '';
+        let status = null;
+        
+        if (guesses[row] && guesses[row][col]) {
+          letter = guesses[row][col].letter;
+          status = guesses[row][col].status;
+        }
+        
+        rowCells.push(
+          <div
+            key={`${row}-${col}`}
+            className={getCellClass(status)}
+          >
+            {letter}
+          </div>
+        );
+      }
+      
+      grid.push(
+        <div key={row} className="grid-row">
+          {rowCells}
+        </div>
+      );
+    }
+    
+    return grid;
   };
 
   return (
-    <div style={{ fontFamily: 'sans-serif', textAlign: 'center', padding: '20px' }}>
+    <div className="App">
       <h1>Wordle Clone</h1>
 
-      {guesses.length > 0 && (
-        <div style={{ marginBottom: '20px' }}>
-          {guesses.map((guess, rowIndex) => (
-            <div key={rowIndex} style={{ marginBottom: '10px' }}>
-              {guess.map((item, i) => (
-                <span
-                  key={i}
-                  style={{
-                    display: 'inline-block',
-                    padding: '10px',
-                    marginRight: '5px',
-                    fontSize: '20px',
-                    backgroundColor: getBackgroundColor(item.status),
-                    color: 'white',
-                    borderRadius: '5px',
-                    minWidth: '30px',
-                    textAlign: 'center',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  {item.letter}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="grid">
+        {renderGrid()}
+      </div>
 
       {isActive && (
-        <>
+        <div>
           <input
             type="text"
             value={inputText}
             onChange={handleInputChange}
-            placeholder="Enter a word"
-            style={{ padding: '8px', margin: '10px', fontSize: '16px' }}
+            placeholder="Enter a 5-letter word"
+            maxLength={WORD_LENGTH}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
+            }}
           />
+          <br />
           <button
             onClick={handleSubmit}
-            style={{ padding: '8px 15px', fontSize: '16px', cursor: 'pointer' }}
+            disabled={inputText.length !== WORD_LENGTH}
           >
-            Guess
+            Submit Guess
           </button>
 
           <button
             onClick={handleShowStats}
-            style={{
-              padding: '8px 15px',
-              fontSize: '16px',
-              cursor: 'pointer',
-              marginBottom: '10px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-            }}
+            className="stats"
           >
-            Show Stats
+            {showStats ? 'Hide Stats' : 'Show Stats'}
           </button>
-        </>
+        </div>
       )}
 
       {!isActive && (
-        <div style={{ marginTop: '20px' }}>
+        <div>
           <h2>{gameOverMessage}</h2>
-          <button
-            onClick={handleRestart}
-            style={{
-              padding: '8px 15px',
-              fontSize: '16px',
-              cursor: 'pointer',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              marginTop: '10px',
-            }}
-          >
+          {targetWord && (
+            <p>
+              <strong>The word was: </strong>
+              <div className="target-word">{targetWord}</div>
+            </p>
+          )}
+          <button onClick={handleRestart}>
             Play Again
           </button>
         </div>
       )}
 
       {showStats && stats && (
-        <div style={{ marginTop: '20px', fontSize: '16px' }}>
+        <div className="stats-box">
+          <h3>Game Statistics</h3>
           <p><strong>Attempts Left:</strong> {ATTEMPTS - stats.attempts}</p>
           <p><strong>Time Played:</strong> {elapsedTime} seconds</p>
         </div>
       )}
 
-      {error && <div style={{ color: 'red', marginTop: '10px' }}>Error: {error}</div>}
+      {error && (
+        <div className="error-message">
+          Error: {error}
+        </div>
+      )}
     </div>
   );
 }

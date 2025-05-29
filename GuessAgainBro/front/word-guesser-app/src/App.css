@@ -1,38 +1,148 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+  background: #f3f3f3;
   min-height: 100vh;
+  padding: 40px 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  letter-spacing: 2px;
+  color: #222;
+}
+
+.grid {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  margin: 0 auto 30px auto;
+  width: max-content;
+}
+
+.grid-row {
+  display: flex;
+  gap: 6px;
+}
+
+.grid-cell {
+  width: 56px;
+  height: 56px;
+  border: 2px solid #d3d6da;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: white;
+  color: #222;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.grid-cell.correct {
+  background-color: #6aaa64;
   color: white;
+  border-color: #6aaa64;
 }
 
-.App-link {
-  color: #61dafb;
+.grid-cell.present {
+  background-color: #c9b458;
+  color: white;
+  border-color: #c9b458;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.grid-cell.absent {
+  background-color: #787c7e;
+  color: white;
+  border-color: #787c7e;
+}
+
+input[type="text"] {
+  padding: 12px;
+  font-size: 1.2rem;
+  width: 180px;
+  border: 2px solid #d3d6da;
+  border-radius: 5px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+button {
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  margin: 0 8px 12px 8px;
+  background: #6aaa64;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+button:disabled {
+  background: #bcbcbc;
+  color: #f3f3f3;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: #787c7e;
+}
+
+button.stats {
+  background: #c9b458;
+  color: #222;
+}
+
+.stats-box {
+  background: #fff;
+  border: 2px solid #d3d6da;
+  border-radius: 8px;
+  display: inline-block;
+  padding: 18px 32px;
+  margin-top: 18px;
+  font-size: 1.1rem;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.target-word {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #6aaa64;
+  letter-spacing: 4px;
+  margin: 10px 0 18px 0;
+}
+
+.error-message {
+  color: #d73027;
+  background: #ffeaea;
+  border: 1px solid #d73027;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 16px auto;
+  width: 320px;
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  .grid-cell {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
   }
-  to {
-    transform: rotate(360deg);
+  .stats-box {
+    padding: 10px 8px;
+    font-size: 0.95rem;
+  }
+  input[type="text"] {
+    width: 110px;
+    font-size: 1rem;
   }
 }
