@@ -77,3 +77,7 @@ Jeigu vartotojas nesugebėjo atspėti žodžio po šešių bandymų, žaidimas y
 ## Paleidimas
 Norint paleisti projektą, pagrindiniame kataloge atidarykite `GuessAgainBro.sln` failą ir paleiskite projektą, kad būtų sukompiliuotas serveris.
 Tuomet eikite į katalogą `front/word-guesser-app` ir paleiskite frontendą su komanda `npm start`.
+
+## Reflection
+Rest API darymas su c++ nebuvo toks didelis baubas kaip atrodė iš pat pradžių, visai simple.
+Galėjom pamėgint frontendą su c++, bet įsivaizduoju kad žiauriai sudėtinga tūrėtų būt, dėl laiko stokos vengėm.
