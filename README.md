@@ -81,3 +81,5 @@ Tuomet eikite į katalogą `front/word-guesser-app` ir paleiskite frontendą su 
 ## Reflection
 Rest API darymas su c++ nebuvo toks didelis baubas kaip atrodė iš pat pradžių, visai simple.
 Galėjom pamėgint frontendą su c++, bet įsivaizduoju kad žiauriai sudėtinga tūrėtų būt, dėl laiko stokos vengėm.
+
+Manau, buvo naudinga patiems sugalvoti projekto viziją, ją analizuoti ir galiausiai parengti diagramas. Tokiu būdu pavyko giliau suprasti dėstomą medžiagą – kuriant diagramas atsiskleidė įvairios kūrimo subtilybės, kurias po paskaitos lengva pamiršti. Taip pat buvo įdomu išbandyti backend programavimą su C++ – anksčiau esu dirbęs su Java ir C#, tačiau sunkiai įsivaizdavau, kaip tai gali atrodyti C++ kalboje.
